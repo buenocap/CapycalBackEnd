@@ -1,5 +1,15 @@
 const User = require("../models/user.model.js");
 
+//Show all users
+const index = async (req, res) => {
+  try {
+    const users = await User.find();
+    res.status(200).send(users);
+  } catch (error) {
+    res.status(400).send(error);
+  }
+};
+
 //Register
 const register = async (req, res) => {
   try {
@@ -17,6 +27,10 @@ const login = async (req, res) => {
       email: req.params.email,
       password: req.params.password,
     });
+    if (!user) {
+      res.status(401).send({ message: "Invalid email or password" });
+      return;
+    }
     res.status(200).send(user);
   } catch (error) {
     res.status(400).send(error);
@@ -45,4 +59,4 @@ const deleteOne = async (req, res) => {
   }
 };
 
-module.exports = { register, login, update, deleteOne };
+module.exports = { register, login, update, deleteOne, index };

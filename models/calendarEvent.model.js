@@ -15,10 +15,6 @@ const CalendarEventSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// Index for efficient querying
-CalendarEventSchema.index({startDate: 1});
-CalendarEventSchema.index({user: 1});
-
 const Event = mongoose.model("Event", CalendarEventSchema);
 
 module.exports = Event;
