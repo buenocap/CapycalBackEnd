@@ -17,7 +17,7 @@ router.get("/", index);
 router.post("/register", register);
 
 //Read: Login a user
-router.post("/login/:email/:password", login);
+router.post("/login", login);
 
 //Update: Update a user
 router.put("/update/:id", update);

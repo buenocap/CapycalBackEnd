@@ -9,6 +9,9 @@ app.use(express.urlencoded({ extended: false }));
 const userRouter = require("./routes/user.route.js");
 app.use("/users", userRouter);
 
+const protectedRoutes = require("./routes/protected.route.js");
+app.use("/settings", protectedRoutes);
+
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
