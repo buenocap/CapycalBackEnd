@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const authMiddleware = require("../middleware/auth");
 
-// Protected route
+// Protected route to get user profile
 router.get("/profile", authMiddleware, async (req, res) => {
   try {
     res.json({
