@@ -11,6 +11,9 @@ app.use(express.urlencoded({ extended: false }));
 const userRouter = require("./routes/user.route.js");
 app.use("/users", userRouter);
 
+const eventRouter = require("./routes/calendarEvent.route.js");
+app.use("/events", eventRouter);
+
 const protectedRoutes = require("./routes/protected.route.js");
 app.use("/settings", protectedRoutes);
 
