@@ -4,6 +4,11 @@ const cors = require("cors");
 const port = process.env.PORT || 3000;
 const mongoose = require("mongoose");
 
+//Load envrionment variables in development
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
+
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -21,13 +26,18 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
+// Use evn varibles for MongoDB
+const mongoUri =
+  process.env.MONGODB_URI || "mongodb://localhost:27017/CapycalDB";
+
 mongoose
-  .connect(
-    "mongodb+srv://pbueno159:5d7kCKDkAv9nqPwY@capycaldb.uojru0z.mongodb.net/CapycalDB?retryWrites=true&w=majority&appName=CapyCalDB"
-  )
+  .connect(mongoUri)
   .then(() =>
     app.listen(port, () => {
       console.log(`CapyCal backend listening on port ${port}`);
     })
   )
-  .catch((err) => console.log(err));
+  .catch((err) => {
+    console.error("MongoDB connection error:", err);
+    process.exit(1);
+  });
