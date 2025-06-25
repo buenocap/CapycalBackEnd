@@ -9,7 +9,16 @@ if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
 }
 
-app.use(cors());
+const corsOptions = {
+  origin:
+    process.env.NODE_ENV === "production"
+      ? ["https://capy-cal.vercel.app/"]
+      : ["http://localhost:3000", "http://localhost:3001"],
+  credentials: true,
+  optionsSuccessStatus: 200,
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
@@ -26,14 +35,30 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-// Use evn varibles for MongoDB
-const mongoUri =
-  process.env.MONGODB_URI || "mongodb://localhost:27017/CapycalDB";
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    status: "OK",
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+  });
+});
+
+// Use env varibles for MongoDB
+const mongoUri = process.env.MONGODB_URI;
+
+if (!mongoUri) {
+  console.error("MongoDB URI not found in environment variables");
+  process.exit(1);
+}
 
 mongoose
-  .connect(mongoUri)
+  .connect(mongoUri, {
+    maxPoolSize: 10,
+    serverSelectionTimeoutMS: 5000,
+    socketTimeoutMS: 45000,
+  })
   .then(() =>
-    app.listen(port, () => {
+    app.listen(port, "0.0.0.0", () => {
       console.log(`CapyCal backend listening on port ${port}`);
     })
   )
